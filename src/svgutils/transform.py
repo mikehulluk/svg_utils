@@ -30,11 +30,10 @@ class FigureElement(object):
 
 
 class TextElement(FigureElement):
-    def __init__(self, x, y, text, size=8, font="Verdana",
-            weight="normal"):
-        txt = etree.Element(SVG+"text", {"x": str(x), "y": str(y),
-            "font-size":str(size), "font-family": font,
-            "font-weight": weight})
+    def __init__(self, x, y, text, size=8, font="Verdana", weight="normal", style='normal', **kwargs):
+        params = {"x": str(x), "y": str(y),"font-size":str(size), "font-family": font,"font-weight": weight, 'font-style':style}
+        params.update(kwargs)
+        txt = etree.Element(SVG+"text", params)
         txt.text = text
         FigureElement.__init__(self, txt)
 
