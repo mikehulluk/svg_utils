@@ -14,12 +14,12 @@ class FigureElement(object):
         self.root = xml_element 
 
     def moveto(self, x, y, scale=1):
-        self.root.set("transform", "translate(%s, %s) scale(%s)" %
-                (x,y, scale))
+        self.root.set("transform", "%s translate(%s, %s) scale(%s)" %
+                (self.root.get("transform") or '', x,y, scale))
 
     def rotate(self, angle, x=0, y=0):
-        self.root.set("transform", "rotate(%f %f %f)" %
-                (angle,x, y))
+        self.root.set("transform", "%s rotate(%f %f %f)" %
+                (self.root.get("transform") or '', angle,x, y))
 
 
     def __getitem__(self, i):
@@ -55,6 +55,7 @@ class SVGFigure(object):
         if width or height:
             self.root.set("width", width)
             self.root.set("height",  height)
+            self.root.set("viewbox", "0 0 %s %s" % (width, height))
     def append(self,element):
         try:
             self.root.append(element.root)
