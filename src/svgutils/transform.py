@@ -33,11 +33,14 @@ class FigureElement(object):
 
 
 class TextElement(FigureElement):
-    def __init__(self, x, y, text, size=8, font="Verdana",
-            weight="normal", letterspacing=0):
-        txt = etree.Element(SVG+"text", {"x": str(x), "y": str(y),
-            "font-size":str(size), "font-family": font,
-            "font-weight": weight, "letter-spacing": str(letterspacing)})
+    def __init__(self, x, y, text, size=8, font="Verdana", weight="normal", letterspacing=0):
+        txt = etree.Element(SVG+"text", {
+            "x": str(x),
+            "y": str(y),
+            "font-size":str(size),
+            "font-family": font,
+            "font-weight": weight,
+            "letter-spacing": str(letterspacing)})
         txt.text = text
         FigureElement.__init__(self, txt)
 
@@ -50,6 +53,49 @@ class GroupElement(FigureElement):
             else:
                 new_group.append(e)
         self.root = new_group
+
+
+
+
+
+
+class MarkerElement(FigureElement):
+    def __init__(self, marker_name, marker_dict, path_dict):
+
+        path_element = etree.Element('path', path_dict)
+        marker_element = etree.Element("marker", marker_dict)
+        marker_element.append(path_element)
+
+        FigureElement.__init__(self, marker_element)
+
+
+
+
+class PathElement(FigureElement):
+    def __init__(self, pts, style=None):
+        _style = {
+            "fill":"none",
+            "stroke":"#000000",
+            "stroke-width":"1px",
+            "stroke-linecap":"butt",
+            "stroke-linejoin":"miter",
+            "stroke-opacity":"1",
+            }
+
+        if style:
+            _style.update(style)
+            
+        style_str = ';'.join( "%s:%s" % (k,v) for (k,v) in _style.items() )
+            
+        pts_str = " ".join( "%f,%f" % p for p in pts )
+    
+        element = etree.Element("path",
+           {'style': style_str, 
+            'd':"M %s" % pts_str,
+            })
+        
+        FigureElement.__init__(self, element)
+
 
 
 class SVGFigure(object):
